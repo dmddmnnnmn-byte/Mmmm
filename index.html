@@ -2,155 +2,424 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>روابط التواصل | ابو نمر - زجاج متجمد</title>
-    <!-- Tailwind CSS for Styling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>أبو نمر - Mobile Ops</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.clouصممdflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Cairo) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Cairo:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <style>
-        /* Base Colors and Fonts */
+        :root {
+            --mil-dark: #0f120d;
+            --mil-green: #4b5320;
+            --mil-light: #a3b18a;
+            --mil-accent: #66ff33;
+            --glass-panel: rgba(20, 30, 20, 0.85);
+        }
+
         body {
-            font-family: 'Cairo', sans-serif;
-            color: #E5E7EB; /* Light text */
-            background: #111827; /* Dark base color */
-            /* Prismatic/Iridescent Background Effect - Two blurred, colorful spots */
-            background-image: 
-                radial-gradient(at 10% 50%, #9333EA30 0px, transparent 50%),
-                radial-gradient(at 90% 80%, #10B98130 0px, transparent 50%);
-            background-attachment: fixed;
-            min-height: 100vh;
+            background-color: var(--mil-dark);
+            color: var(--mil-light);
+            font-family: 'Share Tech Mono', 'Cairo', monospace;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; /* لمنع سكرول الصفحة نفسها */
+            perspective: 1000px;
+            touch-action: none; /* يمنع حركات المتصفح الافتراضية للتركيز على البطاقة */
         }
 
-        /* Glassmorphism / Frosted Glass Effect */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05); /* Very light, low opacity background */
-            backdrop-filter: blur(12px); /* Strong frosted blur */
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15); /* Light edge definition */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* Subtle elevation */
+        /* الخلفية والتمويه */
+        .camo-bg {
+            position: absolute;
+            width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(10, 12, 8, 0.92), rgba(10, 12, 8, 0.95)),
+                url('https://www.transparenttextures.com/patterns/diagmonds-light.png'); 
+            z-index: -2;
         }
 
-        /* Micro-interactions & Physical Feel */
-        .link-button {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateZ(0); /* Hardware acceleration */
+        .radar-sweep {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 200vmax; height: 200vmax; /* تكبير الرادار ليغطي كل الشاشات */
+            transform: translate(-50%, -50%);
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(102, 255, 51, 0.02) 60deg, transparent 60.5deg);
+            border-radius: 50%;
+            animation: radarSpin 12s linear infinite;
+            z-index: -1;
+            pointer-events: none;
         }
-        
-        .link-button:hover {
-            transform: translateY(-5px) scale(1.01) translateZ(0); /* Lift and slight enlarge */
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 255, 255, 0.2); /* Stronger shadow and inner light glow */
-            border-color: rgba(255, 255, 255, 0.5); /* Border brightens */
+        @keyframes radarSpin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* حاوية البطاقة المتجاوبة */
+        .responsive-container {
+            width: 100%;
+            max-width: 400px; /* لا تتجاوز هذا العرض */
+            display: flex;
+            justify-content: center;
+            padding: 10px;
         }
 
-        /* Icon Container Styling (for visual depth) */
-        .icon-container {
-            border-radius: 0.5rem;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); /* Inner shadow for depth */
-            transition: transform 0.3s;
+        .card-wrapper {
+            position: relative;
+            width: 380px;
+            height: 240px;
+            /* الحفاظ على النسبة والتصغير في الشاشات الصغيرة */
+            transform-origin: center center;
+            transition: transform 0.1s;
         }
 
-        .link-button:hover .icon-container {
-            transform: scale(1.05); /* Icon pops out slightly on hover */
+        /* ميديا كويري لتصغير البطاقة على الهواتف الصغيرة جداً */
+        @media (max-width: 400px) {
+            .card-wrapper {
+                transform: scale(0.85);
+            }
+        }
+        @media (max-width: 350px) {
+            .card-wrapper {
+                transform: scale(0.75);
+            }
+        }
+
+        .card-body {
+            width: 100%;
+            height: 100%;
+            border-radius: 18px;
+            background-image: url('https://i.top4top.io/p_363624yyd0.png');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            box-shadow: 
+                0 0 0 1px rgba(102, 255, 51, 0.1),
+                0 25px 60px rgba(0,0,0,0.95);
+            overflow: hidden;
+        }
+
+        /* الطبقات التجميلية */
+        .nv-overlay {
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(102, 255, 51, 0.03) 0%, rgba(0,0,0,0.5) 90%);
+            pointer-events: none; z-index: 2; mix-blend-mode: overlay;
+        }
+
+        .tactical-grid {
+            position: absolute; inset: 0;
+            background-image: 
+                linear-gradient(rgba(102, 255, 51, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 255, 51, 0.05) 1px, transparent 1px);
+            background-size: 25px 25px;
+            z-index: 1; pointer-events: none; opacity: 0.4;
+        }
+
+        /* زر الموسيقى */
+        .tactical-btn {
+            position: absolute; top: 18px; left: 18px;
+            width: 45px; height: 45px; /* تكبير الزر للمس */
+            background: rgba(10, 15, 10, 0.7);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 50;
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
+            -webkit-tap-highlight-color: transparent; /* إزالة لون النقر الأزرق */
+        }
+        .tactical-btn:active { transform: scale(0.9); }
+        .tactical-btn.active {
+            border-color: var(--mil-accent);
+            background: rgba(102, 255, 51, 0.1);
+            box-shadow: 0 0 15px rgba(102, 255, 51, 0.2);
+        }
+        .audio-wave {
+            position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 2px; background: var(--mil-accent); opacity: 0;
+        }
+        .active .audio-wave { animation: equalize 0.8s infinite alternate; opacity: 1; }
+        @keyframes equalize { 0% { width: 8px; opacity: 0.5; } 100% { width: 28px; opacity: 1; } }
+
+        /* العداد الميكانيكي */
+        .mech-drum {
+            position: absolute; right: 0; top: 0; bottom: 0;
+            width: 110px; /* توسيع قليلاً للراحة */
+            background: linear-gradient(90deg, #131610 0%, #1a2016 100%);
+            border-left: 1px solid rgba(255,255,255,0.1);
+            z-index: 20;
+            box-shadow: -8px 0 20px rgba(0,0,0,0.6);
+            clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .scope-lens {
+            position: absolute; top: 50%; left: 0; transform: translateY(-50%);
+            width: 100%; height: 60px;
+            background: linear-gradient(90deg, rgba(102, 255, 51, 0.08) 0%, transparent 100%);
+            border-top: 1px solid rgba(102, 255, 51, 0.5);
+            border-bottom: 1px solid rgba(102, 255, 51, 0.5);
+            pointer-events: none; z-index: 25;
+            box-shadow: inset 0 0 15px rgba(102, 255, 51, 0.05);
+        }
+
+        /* قائمة السكرول المحسنة للمس */
+        .scroll-list {
+            height: 100%;
+            overflow-y: auto;
+            /* تمكين الزخم الأصلي للهاتف */
+            -webkit-overflow-scrolling: touch; 
+            scroll-behavior: auto; /* إيقاف السلوك الناعم للسماح بالزخم اليدوي */
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none; -ms-overflow-style: none;
+            padding: 90px 0;
+            mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+        }
+        .scroll-list::-webkit-scrollbar { display: none; }
+
+        .list-item {
+            height: 60px;
+            display: flex; align-items: center; justify-content: center;
+            scroll-snap-align: center;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.1s;
+            opacity: 0.3;
+            transform: scale(0.7) translateX(10px);
+            position: relative;
+            pointer-events: auto;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .list-item i {
+            font-size: 28px; color: #6b7280;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+        }
+
+        /* الحالة النشطة */
+        .list-item.active {
+            opacity: 1;
+            transform: scale(1) translateX(0);
+        }
+        .list-item.active i {
+            color: var(--mil-light);
+            text-shadow: 0 0 10px rgba(102, 255, 51, 0.6);
+        }
+
+        /* التسمية */
+        .mil-tooltip {
+            position: absolute; right: 120px; top: 50%;
+            transform: translateY(-50%);
+            background: rgba(15, 20, 10, 0.95);
+            border: 1px solid rgba(102, 255, 51, 0.4);
+            padding: 6px 14px;
+            color: var(--mil-accent);
+            font-size: 12px; font-weight: bold; letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0; transition: opacity 0.2s, right 0.2s;
+            pointer-events: none; white-space: nowrap;
+            clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            z-index: 60;
+        }
+        .mil-tooltip.show { opacity: 1; right: 130px; }
+
+        .status-text {
+            position: absolute; bottom: 12px; left: 18px;
+            font-size: 10px; color: var(--mil-light); opacity: 0.7;
+            font-family: 'Share Tech Mono', monospace;
         }
     </style>
 </head>
-<body class="p-4">
+<body>
 
-    <!-- Main Container -->
-    <main class="w-full max-w-md mx-auto">
-        
-        <!-- Profile Section - Applying Glass Effect to the container for visual grounding -->
-        <div class="glass-card text-center mb-8 pt-8 pb-4 rounded-3xl backdrop-blur-sm">
-            <div class="relative inline-block mb-4">
-                <!-- Profile Image -->
-                <img src="https://b.top4top.io/p_3615uynle0.jpg" 
-                     alt="صورة الملف الشخصي" 
-                     class="w-32 h-32 rounded-full object-cover border-4 border-white/40 shadow-xl mx-auto"
-                     onerror="this.src='https://placehold.co/150x150/0f172a/E5E7EB?text=ابو+نمر'">
+    <!-- موسيقى الخلفية -->
+    <audio id="bgMusic">
+        <source src="https://k.top4top.io/m_3638t32ki0.m4a" type="audio/mp4">
+    </audio>
+
+    <!-- مؤثر صوتي للتنقل -->
+    <audio id="navSound">
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_c8c8a73467.mp3?filename=click-124467.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="camo-bg"></div>
+    <div class="radar-sweep"></div>
+
+    <div class="responsive-container">
+        <div class="card-wrapper" id="cardWrapper">
+            <!-- زر الموسيقى -->
+            <div class="tactical-btn" id="musicBtn" onclick="toggleMusic()">
+                <i class="fas fa-play" id="musicIcon"></i>
+                <div class="audio-wave"></div>
             </div>
-            
-            <h1 class="text-3xl font-extrabold mb-1 tracking-wider text-white">ابو نمر</h1>
-            <p class="text-gray-300 text-sm italic">حساباتي الرسمية الموحدة</p>
+
+            <div class="mil-tooltip" id="tooltip">STANDBY</div>
+
+            <div class="card-body">
+                <div class="nv-overlay"></div>
+                <div class="tactical-grid"></div>
+                <div class="status-text" id="statusLine">MOBILE.OPS // ONLINE</div>
+
+                <div class="mech-drum">
+                    <div class="scope-lens"></div>
+
+                    <div class="scroll-list" id="scrollList">
+                        <!-- مساحة فارغة للسكرول -->
+                        <div style="height: 30px; flex-shrink: 0;"></div>
+
+                        <div class="list-item" onclick="execApp(this, event)" data-link="tel:07703740145" data-name="VOICE CALL">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        
+                        <div class="list-item" onclick="execApp(this, event)" data-link="https://t.me/MZO750" data-name="TELEGRAM">
+                            <i class="fab fa-telegram-plane"></i>
+                        </div>
+                        
+                        <div class="list-item" onclick="execApp(this, event)" data-link="https://www.facebook.com/share/1GRmUcwDLr/" data-name="FACEBOOK">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        
+                        <div class="list-item" onclick="execApp(this, event)" data-link="https://www.instagram.com/m_077037" data-name="INSTAGRAM">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        
+                        <div class="list-item" onclick="execApp(this, event)" data-link="https://www.tiktok.com/@sikhoy56" data-name="TIKTOK">
+                            <i class="fab fa-tiktok"></i>
+                        </div>
+
+                        <div style="height: 30px; flex-shrink: 0;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <!-- Links Section -->
-        <div class="flex flex-col gap-5 w-full">
+    <script>
+        const scrollList = document.getElementById('scrollList');
+        const items = document.querySelectorAll('.list-item');
+        const tooltip = document.getElementById('tooltip');
+        const bgMusic = document.getElementById('bgMusic');
+        const navSound = document.getElementById('navSound');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        const statusLine = document.getElementById('statusLine');
+        const cardWrapper = document.getElementById('cardWrapper');
 
-            <!-- Phone / WhatsApp (Green/Physical Style) -->
-            <a href="tel:07703740145" class="link-button glass-card flex items-center p-3 rounded-2xl bg-green-500/10 hover:bg-green-500/20">
-                <div class="icon-container w-12 h-12 bg-green-500 flex items-center justify-center text-xl shadow-lg">
-                    <i class="fas fa-phone-alt text-white"></i>
-                </div>
-                <div class="flex-1 text-center">
-                    <span class="font-bold text-lg text-white">اتصل بي مباشرة</span>
-                    <p class="text-xs text-gray-300">07703740145</p>
-                </div>
-                <i class="fas fa-chevron-left text-gray-400"></i>
-            </a>
+        navSound.volume = 0.3; // صوت خافت ومريح
 
-            <!-- Telegram (Blue/Sky Style) -->
-            <a href="https://t.me/MZO750" target="_blank" class="link-button glass-card flex items-center p-3 rounded-2xl bg-blue-400/10 hover:bg-blue-400/20">
-                <div class="icon-container w-12 h-12 bg-blue-500 flex items-center justify-center text-2xl shadow-lg">
-                    <i class="fab fa-telegram-plane text-white"></i>
-                </div>
-                <div class="flex-1 text-center">
-                    <span class="font-bold text-lg text-white">تيليجرام</span>
-                    <p class="text-xs text-gray-300">@MZO750</p>
-                </div>
-                <i class="fas fa-chevron-left text-gray-400"></i>
-            </a>
+        // === 1. الموسيقى (مرة واحدة) ===
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play().catch(e => console.log("Touch needed first"));
+                musicBtn.classList.add('active');
+                musicIcon.className = 'fas fa-stop';
+                statusLine.innerText = "AUDIO // PLAYING...";
+                statusLine.style.color = "#66ff33";
+            } else {
+                bgMusic.pause();
+                bgMusic.currentTime = 0;
+                resetMusicUI();
+                statusLine.innerText = "AUDIO // SILENT";
+                statusLine.style.color = "";
+            }
+        }
+        
+        bgMusic.addEventListener('ended', () => {
+            resetMusicUI();
+            statusLine.innerText = "AUDIO // ENDED";
+        });
 
-            <!-- Facebook (Dark Blue/Solid Style) -->
-            <a href="https://www.facebook.com/share/1GRmUcwDLr/" target="_blank" class="link-button glass-card flex items-center p-3 rounded-2xl bg-blue-600/10 hover:bg-blue-600/20">
-                <div class="icon-container w-12 h-12 bg-blue-700 flex items-center justify-center text-2xl shadow-lg">
-                    <i class="fab fa-facebook-f text-white"></i>
-                </div>
-                <div class="flex-1 text-center">
-                    <span class="font-bold text-lg text-white">فيسبوك</span>
-                </div>
-                <i class="fas fa-chevron-left text-gray-400"></i>
-            </a>
+        function resetMusicUI() {
+            musicBtn.classList.remove('active');
+            musicIcon.className = 'fas fa-play';
+        }
 
-            <!-- Instagram (Iridescent/Gradient Style) -->
-            <a href="https://www.instagram.com/m_077037" target="_blank" class="link-button glass-card flex items-center p-3 rounded-2xl bg-pink-500/10 hover:bg-pink-500/20">
-                <div class="icon-container w-12 h-12 bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 flex items-center justify-center text-2xl shadow-lg">
-                    <i class="fab fa-instagram text-white"></i>
-                </div>
-                <div class="flex-1 text-center">
-                    <span class="font-bold text-lg text-white">إنستغرام</span>
-                    <p class="text-xs text-gray-300">@m_077037</p>
-                </div>
-                <i class="fas fa-chevron-left text-gray-400"></i>
-            </a>
+        // === 2. العداد مع "الزخم" (Momentum) ===
+        let isScrolling = false;
+        let lastActive = null;
 
-            <!-- TikTok (Black/Contrast Style) -->
-            <a href="https://www.tiktok.com/@sikhoy56" target="_blank" class="link-button glass-card flex items-center p-3 rounded-2xl bg-white/5 hover:bg-white/10">
-                <div class="icon-container w-12 h-12 bg-black flex items-center justify-center text-2xl shadow-lg border border-gray-700">
-                    <i class="fab fa-tiktok text-white"></i>
-                </div>
-                <div class="flex-1 text-center">
-                    <span class="font-bold text-lg text-white">تيك توك</span>
-                    <p class="text-xs text-gray-300">sikhoy56</p>
-                </div>
-                <i class="fas fa-chevron-left text-gray-400"></i>
-            </a>
+        scrollList.addEventListener('scroll', () => {
+            const center = scrollList.scrollTop + (scrollList.offsetHeight / 2);
+            let activeFound = false;
 
-        </div>
+            items.forEach((item) => {
+                const itemCenter = item.offsetTop + (item.offsetHeight / 2);
+                const dist = Math.abs(center - itemCenter);
 
-        <!-- Footer -->
-        <footer class="mt-12 text-center text-gray-500 text-sm pb-8">
-    </p>
-        </footer>
+                if (dist < 30) { // منطقة التنشيط
+                    if (!item.classList.contains('active')) {
+                        // تشغيل صوت النقر فقط إذا تغير العنصر
+                        if (lastActive !== item) {
+                            const click = navSound.cloneNode();
+                            click.play().catch(() => {});
+                            lastActive = item;
+                            
+                            // اهتزاز بسيط (Haptic)
+                            if (navigator.vibrate) navigator.vibrate(5);
+                        }
+                    }
+                    
+                    item.classList.add('active');
+                    tooltip.innerText = item.dataset.name;
+                    tooltip.classList.add('show');
+                    activeFound = true;
+                } else {
+                    item.classList.remove('active');
+                }
+            });
 
-    </main>
+            if (!activeFound) tooltip.classList.remove('show');
+        });
+
+        // === 3. التنفيذ عند النقر ===
+        function execApp(el, event) {
+            // نمنع التصرف الافتراضي للتحكم الدقيق
+            event.preventDefault();
+
+            if (el.classList.contains('active')) {
+                // وميض تأكيد
+                tooltip.innerText = "ENGAGED >>";
+                tooltip.style.color = "#fff";
+                tooltip.style.borderColor = "#fff";
+                
+                // فتح الرابط
+                window.open(el.dataset.link, '_blank');
+
+                setTimeout(() => {
+                    tooltip.innerText = el.dataset.name;
+                    tooltip.style.color = "";
+                    tooltip.style.borderColor = "";
+                }, 1000);
+            } else {
+                // إذا لم يكن نشطاً، نمرر إليه
+                // ملاحظة: مع scroll-snap قد يحدث تضارب بسيط، لكن هذا يضمن التمركز
+                const target = el.offsetTop - (scrollList.offsetHeight / 2) + (el.offsetHeight / 2);
+                scrollList.scrollTo({ top: target, behavior: 'smooth' });
+            }
+        }
+
+        // === 4. حركة ثلاثية الأبعاد خفيفة للكمبيوتر (اختياري) ===
+        document.addEventListener('mousemove', (e) => {
+            if (window.innerWidth < 768) return; // تعطيل على الموبايل
+            const x = (window.innerWidth / 2 - e.pageX) / 40;
+            const y = (window.innerHeight / 2 - e.pageY) / 40;
+            cardWrapper.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
+        });
+
+        document.addEventListener('mouseleave', () => {
+             if (window.innerWidth >= 768) {
+                cardWrapper.style.transform = `rotateY(0deg) rotateX(0deg)`;
+             }
+        });
+
+        // ضبط المحاذاة الأولية
+        setTimeout(() => {
+             const firstItem = items[0];
+             const target = firstItem.offsetTop - (scrollList.offsetHeight / 2) + (firstItem.offsetHeight / 2);
+             scrollList.scrollTo({ top: target, behavior: 'smooth' });
+        }, 100);
+
+    </script>
 </body>
 </html>
+
 
